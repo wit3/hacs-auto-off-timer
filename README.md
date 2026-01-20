@@ -4,6 +4,8 @@
 
 Home Assistant custom integration that automatically turns off a selected light, switch, or fan after a configurable countdown. The integration creates one sensor for the target entity to show the remaining time.
 
+> **Beta:** This integration is in beta. Features and behavior may change, and issues are possible. Use at your own risk.
+
 ## Installation (HACS)
 
 1. Open HACS in Home Assistant.
