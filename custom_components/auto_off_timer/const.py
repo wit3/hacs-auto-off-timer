@@ -9,6 +9,7 @@ PLATFORMS: list[Platform] = [Platform.SENSOR]
 CONF_TARGETS = "targets"
 CONF_DEFAULT_DURATION = "default_duration"
 CONF_ENTITIES = "entities"
+CONF_DOMAINS = "domains"
 CONF_ENABLED = "enabled"
 CONF_DURATION = "duration"
 CONF_RESTART_MODE = "restart_mode"
@@ -26,3 +27,5 @@ ATTR_DURATION_SECONDS = "duration_seconds"
 ATTR_FINISHES_AT = "finishes_at"
 
 DATA_SENSORS = "sensors"
+
+DEFAULT_DOMAINS: list[str] = ["light", "switch", "fan"]

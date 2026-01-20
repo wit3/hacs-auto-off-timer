@@ -9,11 +9,13 @@ from homeassistant.helpers import selector
 
 from .const import (
     CONF_DEFAULT_DURATION,
+    CONF_DOMAINS,
     CONF_DURATION,
     CONF_ENABLED,
     CONF_ENTITIES,
     CONF_RESTART_MODE,
     CONF_TARGETS,
+    DEFAULT_DOMAINS,
     DOMAIN,
     RESTART_ANY_CHANGE,
     RESTART_NEVER,
@@ -33,7 +35,10 @@ class AutoOffTimerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     ) -> config_entries.FlowResult:
         """Handle the initial step."""
         if user_input is not None:
-            targets: list[str] = user_input[CONF_TARGETS]
+            raw_targets = user_input[CONF_TARGETS]
+            targets: list[str] = (
+                raw_targets if isinstance(raw_targets, list) else [raw_targets]
+            )
             default_duration: int = user_input[CONF_DEFAULT_DURATION]
             entities: dict[str, dict[str, Any]] = {}
             for target in targets:
@@ -49,6 +54,7 @@ class AutoOffTimerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_TARGETS: targets,
                     CONF_DEFAULT_DURATION: default_duration,
                     CONF_ENTITIES: entities,
+                    CONF_DOMAINS: DEFAULT_DOMAINS,
                 },
             )
 
@@ -56,8 +62,8 @@ class AutoOffTimerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             {
                 vol.Required(CONF_TARGETS): selector.EntitySelector(
                     selector.EntitySelectorConfig(
-                        multiple=True,
-                        domain=["light", "switch", "fan"],
+                        multiple=False,
+                        domain=DEFAULT_DOMAINS,
                     )
                 ),
                 vol.Required(
@@ -97,6 +103,9 @@ class AutoOffTimerOptionsFlowHandler(config_entries.OptionsFlow):
         current_entities: dict[str, dict[str, Any]] = self._entry.options.get(
             CONF_ENTITIES, self._entry.data.get(CONF_ENTITIES, {})
         )
+        current_domains: list[str] = self._entry.options.get(
+            CONF_DOMAINS, self._entry.data.get(CONF_DOMAINS, DEFAULT_DOMAINS)
+        )
 
         if user_input is not None:
             entities: dict[str, dict[str, Any]] = {}
@@ -109,10 +118,23 @@ class AutoOffTimerOptionsFlowHandler(config_entries.OptionsFlow):
 
             return self.async_create_entry(
                 title="",
-                data={CONF_ENTITIES: entities},
+                data={
+                    CONF_ENTITIES: entities,
+                    CONF_DOMAINS: user_input[CONF_DOMAINS],
+                },
             )
 
-        schema: dict[vol.Marker, Any] = {}
+        schema: dict[vol.Marker, Any] = {
+            vol.Required(
+                CONF_DOMAINS, default=current_domains
+            ): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=DEFAULT_DOMAINS,
+                    multiple=True,
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                )
+            )
+        }
         for target in targets:
             target_cfg = current_entities.get(target, {})
             schema[

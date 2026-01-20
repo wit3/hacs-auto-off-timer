@@ -3,9 +3,9 @@
         "step": {
             "user": {
                 "title": "Auto Off Timer",
-                "description": "Select target entities and a default duration.",
+                "description": "Select the target entity and a default duration.",
                 "data": {
-                    "targets": "Target entities",
+                    "targets": "Target entity",
                     "default_duration": "Default duration (seconds)"
                 }
             }
@@ -15,7 +15,10 @@
         "step": {
             "init": {
                 "title": "Entity options",
-                "description": "Configure each target entity."
+                "description": "Configure the target entity.",
+                "data": {
+                    "domains": "Domains included in search"
+                }
             }
         }
     }
