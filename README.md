@@ -23,7 +23,7 @@ Home Assistant custom integration that automatically turns off a selected light,
 3. Select the target entity (domains: light, switch, fan).
 4. Set the default duration (seconds).
 
-To change per-entity settings (enabled, duration, restart mode), open the integration and use **Options**.
+To change the settings (enabled, duration, restart mode) and the list of domains included in the entity selector, open the integration and use **Options**.
 
 ### Restart modes
 
@@ -49,9 +49,9 @@ Services are under the `auto_off_timer` domain and accept target entity IDs (lig
 ```yaml
 service: auto_off_timer.start
 data:
-	entity_id:
-		- light.kitchen
-	duration: 600
+  entity_id:
+    - light.kitchen
+  duration: 600
 ```
 
 ### Restart
@@ -59,8 +59,8 @@ data:
 ```yaml
 service: auto_off_timer.restart
 data:
-	entity_id:
-		- light.kitchen
+  entity_id:
+    - light.kitchen
 ```
 
 ### Cancel
@@ -68,8 +68,8 @@ data:
 ```yaml
 service: auto_off_timer.cancel
 data:
-	entity_id:
-		- light.kitchen
+  entity_id:
+    - light.kitchen
 ```
 
 ## Example usage
