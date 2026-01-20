@@ -111,6 +111,11 @@ class AutoOffTimerSensor(RestoreEntity, SensorEntity):
         return max(0, remaining)
 
     @property
+    def available(self) -> bool:
+        """Return True if target entity exists in state machine."""
+        return self.hass.states.get(self._target_entity_id) is not None
+
+    @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return extra state attributes."""
         return {
