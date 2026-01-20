@@ -56,6 +56,7 @@ async def async_setup_entry(
                 CONF_DURATION: data[CONF_DEFAULT_DURATION],
                 CONF_RESTART_MODE: RESTART_ON_ONLY,
             }
+        device_info = _get_device_info(hass, target)
         entities.append(
             AutoOffTimerSensor(
                 hass=hass,
@@ -63,6 +64,7 @@ async def async_setup_entry(
                 enabled=target_cfg.get(CONF_ENABLED, True),
                 duration=int(target_cfg.get(CONF_DURATION, data[CONF_DEFAULT_DURATION])),
                 restart_mode=target_cfg.get(CONF_RESTART_MODE, RESTART_ON_ONLY),
+                device_info=device_info,
             )
         )
 
@@ -82,6 +84,7 @@ class AutoOffTimerSensor(RestoreEntity, SensorEntity):
         enabled: bool,
         duration: int,
         restart_mode: str,
+        device_info: dr.DeviceInfo | None,
     ) -> None:
         self.hass = hass
         self._target_entity_id = target_entity_id
@@ -91,6 +94,8 @@ class AutoOffTimerSensor(RestoreEntity, SensorEntity):
 
         self._attr_name = f"Auto-Off {target_entity_id}"
         self._attr_unique_id = f"auto_off_timer_{target_entity_id.replace('.', '_')}"
+        if device_info is not None:
+            self._attr_device_info = device_info
 
         self._finish_at: datetime | None = None
         self._unsub_expire: CALLBACK_TYPE | None = None
@@ -121,18 +126,6 @@ class AutoOffTimerSensor(RestoreEntity, SensorEntity):
         await super().async_added_to_hass()
         self.hass.data[DOMAIN][DATA_SENSORS][self._target_entity_id] = self
 
-        entity_registry = er.async_get(self.hass)
-        target_entry = entity_registry.async_get(self._target_entity_id)
-        if target_entry and target_entry.device_id:
-            device_registry = dr.async_get(self.hass)
-            target_device = device_registry.async_get(target_entry.device_id)
-            if target_device is not None:
-                if target_device.identifiers or target_device.connections:
-                    self._attr_device_info = dr.DeviceInfo(
-                        identifiers=target_device.identifiers,
-                        connections=target_device.connections,
-                    )
-
         self._unsub_state = async_track_state_change_event(
             self.hass, [self._target_entity_id], self._handle_target_event
         )
@@ -160,6 +153,28 @@ class AutoOffTimerSensor(RestoreEntity, SensorEntity):
             self._finish_at = None
 
         self.async_write_ha_state()
+
+
+def _get_device_info(
+    hass: HomeAssistant, target_entity_id: str
+) -> dr.DeviceInfo | None:
+    entity_registry = er.async_get(hass)
+    target_entry = entity_registry.async_get(target_entity_id)
+    if target_entry is None or target_entry.device_id is None:
+        return None
+
+    device_registry = dr.async_get(hass)
+    target_device = device_registry.async_get(target_entry.device_id)
+    if target_device is None:
+        return None
+
+    if not target_device.identifiers and not target_device.connections:
+        return None
+
+    return dr.DeviceInfo(
+        identifiers=target_device.identifiers,
+        connections=target_device.connections,
+    )
 
     async def async_will_remove_from_hass(self) -> None:
         """Clean up."""
