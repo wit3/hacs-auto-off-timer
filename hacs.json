@@ -1,0 +1,9 @@
+{
+    "name": "Auto Off Timer",
+    "content_in_root": false,
+    "domains": [
+        "auto_off_timer"
+    ],
+    "homeassistant": "2023.8.0",
+    "render_readme": true
+}

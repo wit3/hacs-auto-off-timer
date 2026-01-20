@@ -1,0 +1,67 @@
+start:
+  name: Start countdown
+  description: Start the auto-off countdown for target entities if not already running.
+  fields:
+    entity_id:
+      name: Target entities
+      description: Entity IDs of lights, switches, or fans.
+      required: true
+      selector:
+        entity:
+          multiple: true
+          domain:
+            - light
+            - switch
+            - fan
+    duration:
+      name: Duration (seconds)
+      description: Optional duration override in seconds.
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 86400
+          step: 1
+          unit_of_measurement: s
+          mode: box
+restart:
+  name: Restart countdown
+  description: Restart the auto-off countdown for target entities.
+  fields:
+    entity_id:
+      name: Target entities
+      description: Entity IDs of lights, switches, or fans.
+      required: true
+      selector:
+        entity:
+          multiple: true
+          domain:
+            - light
+            - switch
+            - fan
+    duration:
+      name: Duration (seconds)
+      description: Optional duration override in seconds.
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 86400
+          step: 1
+          unit_of_measurement: s
+          mode: box
+cancel:
+  name: Cancel countdown
+  description: Cancel the auto-off countdown for target entities.
+  fields:
+    entity_id:
+      name: Target entities
+      description: Entity IDs of lights, switches, or fans.
+      required: true
+      selector:
+        entity:
+          multiple: true
+          domain:
+            - light
+            - switch
+            - fan

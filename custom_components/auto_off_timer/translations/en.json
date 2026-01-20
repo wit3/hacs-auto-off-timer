@@ -1,0 +1,22 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Auto Off Timer",
+                "description": "Select target entities and a default duration.",
+                "data": {
+                    "targets": "Target entities",
+                    "default_duration": "Default duration (seconds)"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Entity options",
+                "description": "Configure each target entity."
+            }
+        }
+    }
+}
