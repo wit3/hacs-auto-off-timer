@@ -2,15 +2,15 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz/)
 
-Home Assistant custom integration that automatically turns off selected lights, switches, and fans after a configurable countdown. The integration creates one sensor per target entity to show the remaining time.
+Home Assistant custom integration that automatically turns off a selected light, switch, or fan after a configurable countdown. The integration creates one sensor for the target entity to show the remaining time.
 
 ## Installation (HACS)
 
 1. Open HACS in Home Assistant.
 2. Go to **Integrations**.
 3. Add this repository as a custom repository:
-	 - URL: `https://github.com/wit3/hacs-auto-off-timer`
-	 - Category: Integration
+   - URL: `https://github.com/wit3/hacs-auto-off-timer`
+   - Category: Integration
 4. Install **Auto Off Timer**.
 5. Restart Home Assistant.
 
@@ -18,7 +18,7 @@ Home Assistant custom integration that automatically turns off selected lights, 
 
 1. Go to **Settings** → **Devices & Services**.
 2. Click **Add Integration** and search for **Auto Off Timer**.
-3. Select the target entities (domains: light, switch, fan).
+3. Select the target entity (domains: light, switch, fan).
 4. Set the default duration (seconds).
 
 To change per-entity settings (enabled, duration, restart mode), open the integration and use **Options**.
@@ -31,7 +31,7 @@ To change per-entity settings (enabled, duration, restart mode), open the integr
 
 ## Sensors
 
-For each target entity, a sensor is created:
+For the target entity, a sensor is created:
 
 - Name format: `Auto-Off <target_entity_id>`
 - Example: `Auto-Off light.kitchen`

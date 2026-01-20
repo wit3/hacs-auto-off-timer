@@ -8,7 +8,7 @@ from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_ENTITY_ID, UnitOfTime
 from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant
-from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import (
     async_track_point_in_utc_time,
@@ -124,7 +124,14 @@ class AutoOffTimerSensor(RestoreEntity, SensorEntity):
         entity_registry = er.async_get(self.hass)
         target_entry = entity_registry.async_get(self._target_entity_id)
         if target_entry and target_entry.device_id:
-            self._attr_device_id = target_entry.device_id
+            device_registry = dr.async_get(self.hass)
+            target_device = device_registry.async_get(target_entry.device_id)
+            if target_device is not None:
+                if target_device.identifiers or target_device.connections:
+                    self._attr_device_info = dr.DeviceInfo(
+                        identifiers=target_device.identifiers,
+                        connections=target_device.connections,
+                    )
 
         self._unsub_state = async_track_state_change_event(
             self.hass, [self._target_entity_id], self._handle_target_event
